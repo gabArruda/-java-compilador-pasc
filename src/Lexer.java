@@ -40,8 +40,8 @@ public class Lexer {
 			if (isEOF()) {
 				if (aspas_abertas)
 					sinalizaErroLexico("Aspas não fechadas antes do fim do arquivo");
-				ts.addToken("eof", new Token(Tag.EOF, "EOF", linha, coluna));
-				return ts.getToken("eof");
+				ts.addToken("$", new Token(Tag.EOF, "$", linha, coluna));
+				return ts.getToken("$");
 				
 			}
 			

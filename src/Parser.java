@@ -1,8 +1,7 @@
 public class Parser {
 	
 	Lexer lexer;
-	Token token;
-	
+	Token token;	
 	
 	public Parser(Lexer lexer) throws Exception {
 		this.lexer = lexer;

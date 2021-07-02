@@ -51,7 +51,7 @@ public class Token {
 
 	@Override
 	public String toString() {
-		return "<" + nome + ", \"" + lexema + "\">";
+		return "<" + nome + ", \"" + lexema + "\"> (Ln " + linha + ", Col " + coluna + ")";
 	}
 	
 }
