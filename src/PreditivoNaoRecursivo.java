@@ -16,7 +16,7 @@ public class PreditivoNaoRecursivo {
   public PreditivoNaoRecursivo(Lexer lexer) throws Exception {
 
     this.lexer = lexer;
-		this.token = lexer.proxToken();
+		this.token = this.lexer.proxToken();
 		
 		if (this.token == null) {
 			throw new Exception("Nenhum token reconhecido");
@@ -196,7 +196,7 @@ public class PreditivoNaoRecursivo {
         }
       }
       else if (tk_type.equals(action)) {
-        this.token = lexer.proxToken();
+        this.token = this.lexer.proxToken();
       }
       else if (action.equals("&")) {}
       else {
@@ -205,12 +205,12 @@ public class PreditivoNaoRecursivo {
 
       System.out.println("Ação: [ " + action + " ]. Fila: " + actions);
     }
-    System.out.println("Programa compilado corretamente.");
+    
   }
 
   private String tokenType(Token token) throws Exception {
     while(this.token.getNome() == Tag.COM_MULT_LINES || this.token.getNome() == Tag.COM_ONE_LINE) {
-      this.token = lexer.proxToken();
+      this.token = this.lexer.proxToken();
     }
     if (this.token.getNome() == Tag.NUM_CONST) {
       return "num_const";
@@ -230,7 +230,7 @@ public class PreditivoNaoRecursivo {
     map.put(new Tuple(naoTerminal, terminal), value);
   }
 
-  public String get(String naoTerminal, String terminal) throws Exception {      
+  private String get(String naoTerminal, String terminal) throws Exception {      
     String value = map.get(new Tuple(naoTerminal, terminal));
     if (value != null) {
       return value;

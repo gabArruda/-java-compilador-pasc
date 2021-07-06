@@ -6,7 +6,7 @@ Programa Teste
 
 program P1
    num x, y, z;
-   char k; 
+   char k;
 {   
    write "Teste para o Lexer";
    

@@ -6,13 +6,11 @@ public class Lexer {
 	
 	private char[] conteudo;
 	private char caractere_atual;
-	private int err_count = 0;
+	private int lexErrorCount = 0;
 	private int estado;
 	private int pos;
 	private int linha, linha_anterior;
 	private int coluna, coluna_anterior;
-	private boolean erro_aspas_abertas = false;
-	private boolean aspas_abertas = false;
 	protected TabelaSimbolos ts;
 	
 	public Lexer(String nomeArquivo) {
@@ -31,15 +29,16 @@ public class Lexer {
 		}
 	}
 	
-	public Token proxToken() throws Exception {
+	public Token proxToken() {
 		String lexema = "";
 		estado = 0;
 		
 		while (true) {
 			
 			if (isEOF()) {
-				if (aspas_abertas)
-					sinalizaErroLexico("Aspas não fechadas antes do fim do arquivo");
+				if (estado == 27 || estado == 28) {
+					sinalizaErroLexico("Comentário de multiplas linhas não fechado antes do fim do programa");
+				}
 				ts.addToken("$", new Token(Tag.EOF, "$", linha, coluna));
 				return ts.getToken("$");
 				
@@ -62,8 +61,6 @@ public class Lexer {
 					}
 					else if (caractere_atual == '\"') {
 						lexema += caractere_atual;
-						erro_aspas_abertas = true;
-						aspas_abertas = true;
 						estado = 9;
 					}
 					else if (isLetter(caractere_atual)) {
@@ -175,15 +172,14 @@ public class Lexer {
 				case 9:
 					if (caractere_atual == '\"') {
 						lexema += caractere_atual;
-						erro_aspas_abertas = false;
-						aspas_abertas = false;
 						estado = 0;
 						return new Token(Tag.CHAR_CONST, lexema, linha, coluna);
 					}
-					else if (isNewLine(caractere_atual) && erro_aspas_abertas == true) {
-						estado = 9;
-						erro_aspas_abertas = false;
+					else if (isNewLine(caractere_atual)) {
+						retornaPonteiro();
+						estado = 0;
 						sinalizaErroLexico("Aspas não fechadas na linha " + (linha-1));
+						return new Token(Tag.CHAR_CONST, lexema, linha, coluna);
 					}
 					else if (isASCII(caractere_atual)) {
 						lexema += caractere_atual;
@@ -252,11 +248,9 @@ public class Lexer {
 					break;
 				case 25:
 					if (caractere_atual == '*' ) {
-						lexema += caractere_atual;
 						estado = 27;
 					}
 					else if (caractere_atual == '/') {
-						lexema += caractere_atual;
 						estado = 26;
 					}
 					else {
@@ -264,48 +258,41 @@ public class Lexer {
 						return new Token(Tag.OP_DIV, lexema, linha, coluna);
 					}
 					break;
-				case 26:
+				case 26: //Comentário 1 linha
 					if (isNewLine(caractere_atual)) {
 						retornaPonteiro();
 						estado = 0;
-						return new Token(Tag.COM_ONE_LINE, "", linha, coluna);
+						lexema = "";
 					}
-					if (isASCII(caractere_atual)) {
-						lexema += caractere_atual;
+					else if (isASCII(caractere_atual)) {
 						estado = 26;
 					}
 					else {
+						retornaPonteiro();
 						estado = 0;
-						return new Token(Tag.COM_ONE_LINE, "", linha, coluna);
+						lexema = "";
 					}
 					break;
-				case 27:
+				case 27: //Comentário multiplas linhas					
 					if (caractere_atual == '*') {
-						lexema += caractere_atual;
 						estado = 28;
 					}
 					else if (isASCII(caractere_atual)) {
-						lexema += caractere_atual;
 						estado = 27;
 					}
 					break;
 				case 28:
 					if(caractere_atual == '/') {
-						lexema += caractere_atual;
 						estado = 0;
-						return new Token(Tag.COM_MULT_LINES, "", linha, coluna);
+						lexema = "";
 					}
 					else if (caractere_atual == '*') {
-						lexema += caractere_atual;
 						estado = 28;
 					}
 					else if (isASCII(caractere_atual)) {
-						lexema += caractere_atual;
 						estado = 27;
 					}
 					break;
-					
-			
 			}
 		}
 		
@@ -332,13 +319,14 @@ public class Lexer {
 		}
 	}
 	
-	private void sinalizaErroLexico(String message) throws Exception {
-		err_count++;
-		if (err_count <= 3) {
+	private void sinalizaErroLexico(String message) {
+		lexErrorCount++;
+		if (lexErrorCount <= 3) {
 			System.out.println("[Erro Lexico]: " + message);
 		}
 		else {
-			throw new Exception("Mais que 3 erros léxicos foram encontrados, abortando execução.");
+			System.out.println("Mais de 3 erros léxicos encontrados, abortando.");
+			System.exit(-1);
 		}
 	}
 	
