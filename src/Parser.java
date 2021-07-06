@@ -13,16 +13,12 @@ public class Parser {
 		}
 	}
 	
-	private void sinalizaErroSemantico(String mensagem) throws Exception {        
-
-      throw new Exception("[Erro Semantico] na linha " + token.getLinha() + " e coluna " + token.getColuna() + " - " + mensagem);
-
+	private void sinalizaErroSemantico(String mensagem) throws Exception {
+    throw new Exception("[Erro Semantico] na linha " + this.lexer.getLinha() + " e coluna " + this.lexer.getColuna() + " - " + mensagem);
 	}
 	
 	private void sinalizaErroSintatico(String mensagem) throws Exception {
-
-      throw new Exception("[Erro Sintatico] na linha " + token.getLinha() + " e coluna " + token.getColuna() + " - " + mensagem);
-
+    throw new Exception("[Erro Sintatico] na linha " + this.lexer.getLinha() + " e coluna " + this.lexer.getColuna() + " - " + mensagem);
 	}
 	
 	private void advance() throws Exception {

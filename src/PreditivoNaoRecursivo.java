@@ -200,7 +200,7 @@ public class PreditivoNaoRecursivo {
       }
       else if (action.equals("&")) {}
       else {
-        throw new Exception("Esperado: \"" + action + "\", encontrado: " + tk_type);
+        throw new Exception("[Erro Sintatico] (ln " +this.lexer.getLinha() + ", col " + this.lexer.getColuna() + ") - Esperado: \"" + action + "\", encontrado: " + tk_type);
       }
 
       System.out.println("Ação: [ " + action + " ]. Fila: " + actions);
@@ -235,7 +235,7 @@ public class PreditivoNaoRecursivo {
     if (value != null) {
       return value;
     }
-    throw new Exception("não encontrado no mapa: " + naoTerminal + " com " + terminal);
+    throw new Exception("[Erro Sintatico] Não encontrado no mapa: " + naoTerminal + " com " + terminal);
   }
 
 }

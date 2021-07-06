@@ -8,6 +8,7 @@ public class Main {
 		System.out.println("Alunos:");
 		System.out.println("Gabriel Arruda Ribeiro - 119122665");
 		System.out.println("Isabella Dutra Vieira Salgueiro - 11826958");
+		System.out.println("Marcela Cristyne Alves da Silva - 11817313");
 		System.out.println("----------");
 
 		
@@ -36,7 +37,7 @@ public class Main {
 			System.out.println("Compilação finalizada.");
 		}
 		catch(Exception ex) {
-			System.out.println("Exceção não tratada - " + ex.getMessage());
+			System.out.println(ex.getMessage());
 		}
 
 	}
